@@ -1,11 +1,11 @@
-from sqlalchemy import Column, Integer, String, Enum, Select, Insert, Update, Delete, CursorResult, Table
+from sqlalchemy import Column, Integer, String, Enum, Select, Insert, Update, Delete, CursorResult, Table, MetaData
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 from typing import Any
 import enum
+import os
 
-DATABASE_URL = "postgresql+asyncpg://username:password@localhost:5432/mydatabase"
+DATABASE_URL = os.environ["DATABASE_URL"]
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 
@@ -18,6 +18,7 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
+metadata = MetaData()
 # Tablas
 class AfinidadMagicaEnum(enum.Enum):
     Oscuridad = "Oscuridad"
@@ -28,7 +29,8 @@ class AfinidadMagicaEnum(enum.Enum):
     Tierra = "Tierra"
 
 solicitudes = Table(
-    "solicitudes",    
+    "solicitudes",
+    metadata,   
     Column("nombre", String(20), nullable=False),
     Column("apellido", String(20), nullable=False),
     Column("identificacion", String(10), unique=True, nullable=False),
@@ -39,6 +41,7 @@ solicitudes = Table(
 
 magos = Table(
     "magos",
+    metadata,
     Column("nombre", String(20), nullable=False),
     Column("apellido", String(20), nullable=False),
     Column("identificacion", String(10), unique=True, nullable=False),
