@@ -1,7 +1,9 @@
 from fastapi import FastAPI, HTTPException, Path, Query, Body
 from database import solicitudes, magos, fetch_all, execute
 from sqlalchemy import select, delete, update, insert
-from models import Solicitud, Mago
+from models import Solicitud
+from schemas import NuevaSolicitud, TransaccionCompletada
+from utils import insertar_nuevo_mago, validar_existencia_solicitud
 
 app = FastAPI()
 
@@ -27,18 +29,29 @@ async def crear_solicitud(solicitud: Solicitud):
         identificacion=solicitud.identificacion,
         edad=solicitud.edad,
         afinidad_magica=solicitud.afinidad_magica,
-        estatus="procesando",
+        estatus="Procesando",
     )
     await execute(insert_query)
+    return NuevaSolicitud(message="Solicitud generada correctamente", data=solicitud)
 
 
 # PUT: Actualizar solicitud
 @app.put("/solicitud/{id}")
 async def update_solicitud(id: int, field: str, value: str | int):
 
-    valid_fields = {"nombre", "apellido", "identificacion", "edad", "afinidad_magica", "estatus"}
+    valid_fields = {
+        "nombre",
+        "apellido",
+        "identificacion",
+        "edad",
+        "afinidad_magica",
+        "estatus",
+    }
     if field not in valid_fields:
         raise HTTPException(status_code=400, detail=f"Invalid field: {field}")
+
+    if not validar_existencia_solicitud(id):
+        raise HTTPException(status_code=404, detail=f"Solicitud no encontrada")
 
     update_query = (
         update(solicitudes)
@@ -46,6 +59,10 @@ async def update_solicitud(id: int, field: str, value: str | int):
         .where(solicitudes.c.identificacion == id)
     )
     await execute(update_query)
+
+    return TransaccionCompletada(
+        message=f"Solicitud actualizada para el campo {field}", id=id
+    )
 
     # raise HTTPException(status_code=404, detail="Item not found")
 
@@ -60,7 +77,12 @@ async def patch_item(id: int, value: str):
     )
     await execute(update_query)
 
-    # raise HTTPException(status_code=404, detail="Item not found")
+    if value == "Aprobada":
+        await insertar_nuevo_mago(id)
+
+    return TransaccionCompletada(
+        message=f"Estatus de la solicitud actualizado a {value}", id=id
+    )
 
 
 # DELETE: Delete an item by ID
