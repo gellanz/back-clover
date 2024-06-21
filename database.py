@@ -33,7 +33,7 @@ metadata = MetaData()
 
 
 # Tablas
-class AfinidadMagicaEnum(enum.Enum):
+class AfinidadMagicaEnum(str, enum.Enum):
     Oscuridad = "Oscuridad"
     Luz = "Luz"
     Fuego = "Fuego"
@@ -42,10 +42,10 @@ class AfinidadMagicaEnum(enum.Enum):
     Tierra = "Tierra"
 
 
-class EstatusEnum(enum.Enum):
-    procesando = "Procesando"
-    aprobada = "Aprobada"
-    denegada = "Denegada"
+class estado_enum(str, enum.Enum):
+    procesando = "procesando"
+    aprobada = "aprobada"
+    denegada = "denegada"
 
 
 solicitudes = Table(
@@ -55,8 +55,8 @@ solicitudes = Table(
     Column("apellido", String(20), nullable=False),
     Column("identificacion", String(10), unique=True, nullable=False),
     Column("edad", Integer, nullable=False),
-    Column("afinidad_magica", Enum(AfinidadMagicaEnum), nullable=False),
-    Column("estatus", Enum(EstatusEnum), nullable=False),
+    Column("afinidad_magica", String, nullable=False),
+    Column("estatus", Enum(estado_enum), nullable=False),
     schema="ia",
 )
 
