@@ -12,7 +12,7 @@ def generar_grimorio():
 
 async def insertar_nuevo_mago(id):
     insert_new_mage_query = insert(magos).values(
-        identicacion=id, treboles_grimorio=generar_grimorio()
+        identificacion=id, treboles_grimorio=generar_grimorio()
     )
     await execute(insert_new_mage_query)
 
@@ -21,6 +21,6 @@ async def validar_existencia_solicitud(id: str):
     query = (
         select("*").select_from(solicitudes).where(solicitudes.c.identificacion == id)
     )
-    if fetch_all(query):
+    if await fetch_all(query):
         return True
     return False
