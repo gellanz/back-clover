@@ -94,4 +94,5 @@ async def delete_item(id: str):
 # uvicorn your_script_name:app --reload
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=5000, log_level="info")
+    import uvicorn
+    uvicorn.run(app)
