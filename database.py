@@ -63,13 +63,8 @@ solicitudes = Table(
 magos = Table(
     "magos",
     metadata,
-    Column("nombre", String(20), nullable=False),
-    Column("apellido", String(20), nullable=False),
     Column("identificacion", String(10), unique=True, nullable=False),
-    Column("edad", Integer, nullable=False),
-    Column("afinidad_magica", Enum(AfinidadMagicaEnum), nullable=False),
     Column("treboles_grimorio", Integer, nullable=False),
-    schema="ia",
 )
 
 
