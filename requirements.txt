@@ -1,0 +1,19 @@
+annotated-types @ file:///croot/annotated-types_1709542908624/work
+anyio @ file:///croot/anyio_1706220167567/work
+asyncpg @ file:///croot/asyncpg_1703165600383/work
+click @ file:///work/perseverance-python-buildout/croot/click_1698845879718/work
+fastapi @ file:///work/perseverance-python-buildout/croot/fastapi_1707343766100/work
+greenlet @ file:///croot/greenlet_1702059959679/work
+h11 @ file:///croot/h11_1706652277403/work
+idna @ file:///croot/idna_1714398848350/work
+psycopg2 @ file:///work/perseverance-python-buildout/croot/psycopg2_1707348232349/work
+pydantic @ file:///croot/pydantic_1709577974639/work
+pydantic_core @ file:///croot/pydantic-core_1709573961665/work
+python-dotenv @ file:///work/perseverance-python-buildout/croot/python-dotenv_1698846722824/work
+setuptools==69.5.1
+sniffio @ file:///croot/sniffio_1705431295498/work
+SQLAlchemy @ file:///croot/sqlalchemy_1718378176902/work
+starlette @ file:///work/perseverance-python-buildout/croot/starlette-recipe_1707343489817/work
+typing_extensions @ file:///croot/typing_extensions_1715268824938/work
+uvicorn @ file:///work/perseverance-python-buildout/croot/uvicorn-split_1698903729429/work
+wheel==0.43.0
