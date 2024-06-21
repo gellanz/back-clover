@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Path, Query, Body
-from database import solicitudes, magos, fetch_all, execute
+from database import solicitudes, magos, fetch_all, execute, estado_enum
 from sqlalchemy import select, delete, update, insert
 from models import Solicitud
 from schemas import NuevaSolicitud, TransaccionCompletada
@@ -29,15 +29,14 @@ async def crear_solicitud(solicitud: Solicitud):
         identificacion=solicitud.identificacion,
         edad=solicitud.edad,
         afinidad_magica=solicitud.afinidad_magica,
-        estatus="Procesando",
+        estatus="procesando",
     )
     await execute(insert_query)
     return NuevaSolicitud(message="Solicitud generada correctamente", data=solicitud)
 
 
-# PUT: Actualizar solicitud
 @app.put("/solicitud/{id}")
-async def update_solicitud(id: int, field: str, value: str | int):
+async def update_solicitud(id: str, field: str, value: str | int):
 
     valid_fields = {
         "nombre",
@@ -50,13 +49,13 @@ async def update_solicitud(id: int, field: str, value: str | int):
     if field not in valid_fields:
         raise HTTPException(status_code=400, detail=f"Invalid field: {field}")
 
-    if not validar_existencia_solicitud(id):
-        raise HTTPException(status_code=404, detail=f"Solicitud no encontrada")
+    if not await validar_existencia_solicitud(id):
+        raise HTTPException(status_code=404, detail=f"Identificador no encontrado")
 
     update_query = (
         update(solicitudes)
-        .values(solicitudes.c.field == value)
         .where(solicitudes.c.identificacion == id)
+        .values({ field: value })
     )
     await execute(update_query)
 
@@ -64,20 +63,18 @@ async def update_solicitud(id: int, field: str, value: str | int):
         message=f"Solicitud actualizada para el campo {field}", id=id
     )
 
-    # raise HTTPException(status_code=404, detail="Item not found")
 
-
-# PATCH: Partially update an existing item by ID
 @app.patch("/solicitud/{id}/estatus")
-async def patch_item(id: int, value: str):
+async def patch_item(id: str, value: str):
+    print(value)
     update_query = (
         update(solicitudes)
-        .values(solicitudes.c.estatus == value)
         .where(solicitudes.c.identificacion == id)
+        .values(estatus = value)
     )
     await execute(update_query)
 
-    if value == "Aprobada":
+    if value == "aprobada":
         await insertar_nuevo_mago(id)
 
     return TransaccionCompletada(
@@ -85,13 +82,13 @@ async def patch_item(id: int, value: str):
     )
 
 
-# DELETE: Delete an item by ID
 @app.delete("/solicitud/{id}")
-async def delete_item(id: int):
+async def delete_item(id: str):
     delete_query = delete(solicitudes).where(solicitudes.c.identificacion == id)
     await execute(delete_query)
-    # raise HTTPException(status_code=404, detail="Item not found")
-
+    return TransaccionCompletada(
+        message=f"Mago con identificador {id} ha sido eliminado"
+    )
 
 # To run the application, use the command:
 # uvicorn your_script_name:app --reload
