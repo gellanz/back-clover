@@ -7,6 +7,9 @@ from .utils import insertar_nuevo_mago, validar_existencia_solicitud
 
 app = FastAPI()
 
+@app.get("/", tags=["Root"])
+async def read_root():
+    return {"message": "Welcome to this fantastic app!"}
 
 @app.get("/solicitudes")
 async def get_solicitudes():
