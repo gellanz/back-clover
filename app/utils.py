@@ -1,4 +1,4 @@
-from database import solicitudes, magos, fetch_all, execute
+from .database import solicitudes, magos, fetch_all, execute
 from sqlalchemy import select, insert
 import random
 

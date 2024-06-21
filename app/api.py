@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException, Path, Query, Body
-from database import solicitudes, magos, fetch_all, execute, estado_enum
+from .database import solicitudes, magos, fetch_all, execute, estado_enum
 from sqlalchemy import select, delete, update, insert
-from models import Solicitud
-from schemas import NuevaSolicitud, TransaccionCompletada
-from utils import insertar_nuevo_mago, validar_existencia_solicitud
+from .models import Solicitud
+from .schemas import NuevaSolicitud, TransaccionCompletada
+from .utils import insertar_nuevo_mago, validar_existencia_solicitud
 
 app = FastAPI()
 
@@ -90,9 +90,3 @@ async def delete_item(id: str):
         message=f"Mago con identificador {id} ha sido eliminado"
     )
 
-# To run the application, use the command:
-# uvicorn your_script_name:app --reload
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("app.api:app", host="0.0.0.0", port=8000, reload=True, log_level="info")

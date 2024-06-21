@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from models import Solicitud
+from .models import Solicitud
 
 
 class NuevaSolicitud(BaseModel):
